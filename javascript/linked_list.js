@@ -1,6 +1,21 @@
 class LinkedList {
   constructor(head = null) {
     this.head = head;
+    this.tail = head
+    this.size = (!this.head)?0:1
+    this.iterate(currNode => {
+      if (currNode.next === null) {
+        this.tail = currNode
+        return true
+      } else {
+        this.size++
+      }
+    })
+  }
+  reduzeSizeBy1() {
+    if (this.size !== 0) {
+      this.size --;
+    }
   }
 
   iterate(callback) {
@@ -47,6 +62,19 @@ class LinkedList {
   addFirst(node) {
     node.next = this.head;
     this.head = node;
+    this.size ++;
+    if (this.tail === null) {
+      this.iterate(currNode => {
+        if (currNode.next === null){
+          this.tail = currNode
+          return true
+        } else{
+          this.size ++
+        }
+      })
+    }
+
+
   }
 
   // add node to end of list, no nodes should be removed
@@ -54,24 +82,29 @@ class LinkedList {
   addLast(node) {
     if (this.head === null) {
       this.head = node;
-      return;
+    } else {
+      this.tail.next = node
     }
+    this.tail = node
 
-    this.iterate(currNode => {
-      if (currNode.next === null) {
-        currNode.next = node;
-        return true;
-      }
-    });
+    this.size ++
+    let temp = node
+    while (temp.next != null) {
+      temp = temp.next
+      this.size ++
+    }
   }
 
   // remove the first Node in the list and update head
   // and return the removed node
   removeFirst() {
     const oldHead = this.head;
-
     if (this.head !== null) {
+      if (this.tail === this.head) {
+        this.tail = null
+      }
       this.head = this.head.next;
+      this.reduzeSizeBy1();
     }
 
     return oldHead;
@@ -83,18 +116,17 @@ class LinkedList {
     if (this.head === null || this.head.next === null) {
       return this.removeFirst();
     }
-
-    let oldTail = null;
-
+    let result
     this.iterate(node => {
       if (node.next.next === null) {
-        oldTail = node.next;
-        node.next = null;
-        return true;
+        result = node.next
+        node.next = null
+        this.tail = node
+        return true
       }
-    });
-
-    return oldTail;
+    })
+    this.reduzeSizeBy1();
+    return result
   }
 
   // replace the node at the given index with the given node
@@ -113,7 +145,10 @@ class LinkedList {
         return true;
       }
     });
-
+    if (node.next === null){
+      this.tail = node
+    }
+    this.size ++;
     return node;
   }
 
@@ -124,13 +159,15 @@ class LinkedList {
       this.addFirst(node);
       return;
     }
-
+    this.size ++;
     this.iterate((currNode, count) => {
       if (count === idx - 1) {
         const oldNext = currNode.next;
         currNode.next = node;
         node.next = oldNext;
-
+        if (node.next === null){
+          this.tail = node
+        }
         return true;
       }
     });
@@ -143,13 +180,14 @@ class LinkedList {
     }
 
     let oldNode = null;
-
+    this.reduzeSizeBy1()
     this.iterate((node, count) => {
       if (count === idx - 1) {
         oldNode = node.next;
         node.next = node.next.next;
-
-        return true;
+        if (node.next === null) {
+          this.tail = node
+        }
       }
     }); 
 
@@ -158,6 +196,8 @@ class LinkedList {
 
   clear() {
     this.head = null;
+    this.tail = null
+    this.size = 0;
   }
 }
 
@@ -167,6 +207,14 @@ class Node {
     this.next = next;
   }
 }
+
+let head = new Node('one', new Node('two', new Node('three', new Node('four'))));
+let linkedList = new LinkedList(head);
+console.log(linkedList.tail)
+console.log(linkedList.head)
+
+
+
 
 if (require.main === module) {
   let head = new Node('one', new Node('two', new Node('three', new Node('four'))));
