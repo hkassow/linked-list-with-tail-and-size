@@ -2,13 +2,12 @@ class LinkedList {
   constructor(head = null) {
     this.head = head;
     this.tail = head
-    this.size = (!this.head)?0:1
+    this.size = 0
     this.iterate(currNode => {
+      this.size ++;
       if (currNode.next === null) {
         this.tail = currNode
         return true
-      } else {
-        this.size++
       }
     })
   }
@@ -37,13 +36,11 @@ class LinkedList {
   }
 
   // print each node's value on its own line
-  // use your iterate method to be DRY! Don't get caught in the code rain, brrr.
   print() {
     this.iterate(node => console.log(node.value));
   }
 
   // find the node with the target value and return it
-  // if not found return null, use your iterate method to be DRY!
   find(target) {
     let result = null;
 
@@ -63,6 +60,7 @@ class LinkedList {
     node.next = this.head;
     this.head = node;
     this.size ++;
+
     if (this.tail === null) {
       this.iterate(currNode => {
         if (currNode.next === null){
@@ -77,8 +75,7 @@ class LinkedList {
 
   }
 
-  // add node to end of list, no nodes should be removed
-  // you may wish to use the iterate method
+  // add node to end of list
   addLast(node) {
     if (this.head === null) {
       this.head = node;
@@ -110,8 +107,8 @@ class LinkedList {
     return oldHead;
   }
 
-  // remove the tail node, iterate may be helpful
-  // return the node you just removed
+  // remove the tail node,
+  // return the node 
   removeLast() {
     if (this.head === null || this.head.next === null) {
       return this.removeFirst();
@@ -153,7 +150,7 @@ class LinkedList {
   }
 
   // insert the node at the given index
-  // no existing nodes should be removed or replaced
+  // no existing nodes replaced
   insert(idx, node) {
     if (idx === 0) {
       this.addFirst(node);
